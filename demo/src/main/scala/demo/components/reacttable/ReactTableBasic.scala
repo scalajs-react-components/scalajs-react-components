@@ -9,6 +9,7 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
 object ReactTableBasic {
+  import scala.language.existentials
   import ReactTable._
   val code = GhPagesMacros.exampleSource
 

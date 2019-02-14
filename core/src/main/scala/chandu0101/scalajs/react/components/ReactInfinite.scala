@@ -1,8 +1,8 @@
 package chandu0101.scalajs.react.components
 
 import chandu0101.macros.tojs.JSMacro
-import japgolly.scalajs.react._
-import japgolly.scalajs.react.raw._
+import japgolly.scalajs.react.raw.React
+import japgolly.scalajs.react.{Callback, Children, JsComponent}
 import japgolly.scalajs.react.vdom.VdomElement
 import org.scalajs.dom.raw.HTMLElement
 
@@ -19,7 +19,7 @@ case class ReactInfinite(
     preloadBatchSize: js.UndefOr[Int] = js.undefined,
     containerHeight: Int,
     ref: js.UndefOr[ReactInfiniteM => Unit] = js.undefined,
-    loadingSpinnerDelegate: js.UndefOr[ReactElement] = js.undefined,
+    loadingSpinnerDelegate: js.UndefOr[React.Element] = js.undefined,
     timeScrollStateLastsForAfterUserScrolls: js.UndefOr[Int] = js.undefined,
     elementHeight: Double,
     key: js.UndefOr[String] = js.undefined,

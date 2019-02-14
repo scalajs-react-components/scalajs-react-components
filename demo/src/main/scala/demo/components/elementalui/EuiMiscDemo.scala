@@ -24,7 +24,7 @@ object EuiMiscDemo {
 
   case class Backend($ : BackendScope[Unit, State]) {
     def handleClear(event: ReactEvent) =
-      $.modState(identity)
+      $.modState(s => s)
 
     def handlePageSelect(page: Int) =
       $.modState(_.copy(currentPage = page))

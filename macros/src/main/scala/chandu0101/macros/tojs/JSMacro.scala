@@ -1,9 +1,10 @@
 package chandu0101.macros.tojs
 
-import japgolly.scalajs.react.CallbackTo
 import japgolly.scalajs.react.vdom.{TagOf, VdomElement, VdomNode}
+import japgolly.scalajs.react.{CallbackTo, raw}
 
 import scala.collection.{GenMap, GenTraversableOnce}
+import scala.language.existentials
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 import scala.scalajs.js
@@ -29,10 +30,16 @@ object JSMacro {
     def isNotPrimitiveAnyVal(tpe: Type) =
       !tpe.typeSymbol.fullName.startsWith("scala.")
 
-    def flattenUnion(tpe: Type): List[Type] =
-      if (tpe <:< typeOf[js.|[_, _]])
-        flattenUnion(tpe.typeArgs(0)) ++ flattenUnion(tpe.typeArgs(1))
-      else List(tpe)
+    def flattenUnion(tpe: Type, breaker: Set[Type]): List[Type] =
+      if (tpe <:< typeOf[js.|[_, _]] && !(tpe <:< typeOf[Null])) {
+        val first     = tpe.dealias.typeArgs(0)
+        val second    = tpe.dealias.typeArgs(1)
+
+        val one = if (breaker(first)) Nil else flattenUnion(first, breaker + first)
+        val two = if (breaker(second)) Nil else flattenUnion(second, breaker + second)
+        one ++ two
+
+      } else List(tpe)
 
     def getJSValueTree(target: Tree, rt: Type): Tree = {
       if (rt <:< typeOf[TOJS])
@@ -84,6 +91,10 @@ object JSMacro {
       else if (rt <:< typeOf[TagOf[_]])
         q"""$target.render.rawElement.asInstanceOf[js.Any]"""
 
+      //this is to make raw.React.Node work
+      else if (rt <:< typeOf[raw.recursiveTypeAliases.ChildrenArray[_]])
+        q"""$target.asInstanceOf[js.Any]"""
+
       /* Other values. Keep AnyVal below at least CallbackTo */
       else if (rt <:< typeOf[AnyVal] && isNotPrimitiveAnyVal(rt))
         q"""$target.value.asInstanceOf[js.Any]"""
@@ -93,7 +104,7 @@ object JSMacro {
         q"""$target.toString.asInstanceOf[js.Any]"""
       else if (rt <:< typeOf[js.|[_, _]]) {
 
-        val (jsTypes, scalaTypes) = flattenUnion(rt).distinct.partition(_ <:< typeOf[js.Any])
+        val (jsTypes, scalaTypes) = flattenUnion(rt, Set(rt)).distinct.partition(_ <:< typeOf[js.Any])
 
         val scalaCases = scalaTypes.map(
           tpe => cq"""x: $tpe => ${getJSValueTree(q"x", tpe)}"""
@@ -111,7 +122,10 @@ object JSMacro {
         }"""
       }
       else {
-        val conversion = c.inferImplicitView(target, rt, typeOf[js.Any], silent = false)
+        val conversion = c.inferImplicitView(target, rt, typeOf[js.Any], silent = true)
+        if (conversion == EmptyTree) {
+          throw new RuntimeException(s"Don't know how to convert $rt to js.Any")
+        }
         q"""$conversion($target)"""
       }
     }
@@ -141,6 +155,14 @@ object JSMacro {
       }
       res
     }
+
+    //    Comment this code back in to see what the macro spits out.
+//        println(
+//          s""" ($target: $tpe) => {
+//          val $props = scala.scalajs.js.Dynamic.literal()
+//          ..$fieldUpdates
+//          $props
+//        }""")
 
     q""" ($target: $tpe) => {
       val $props = scala.scalajs.js.Dynamic.literal()

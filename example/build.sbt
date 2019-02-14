@@ -23,7 +23,7 @@ lazy val settings = commonSettings ++ bundlerSettings
 
 lazy val commonSettings =
   Seq(
-    scalaVersion := "2.12.2",
+    scalaVersion := "2.12.8",
     organization := "net.leibman",
     mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",
     scalacOptions ++= Seq(
@@ -36,7 +36,7 @@ lazy val commonSettings =
     )
   )
 
-lazy val SuiVersion   = "0.68.5"
+lazy val SuiVersion   = "0.79.1"
 lazy val EuiVersion   = "0.6.1"
 lazy val MuiVersion   = "0.18.1"
 lazy val reactVersion = "15.5.4"

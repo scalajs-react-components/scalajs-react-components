@@ -15,7 +15,7 @@ object Runner {
        |
        |import chandu0101.macros.tojs.JSMacro
        |import japgolly.scalajs.react._
-       |import japgolly.scalajs.react.raw._
+       |import japgolly.scalajs.react.raw.React
        |import japgolly.scalajs.react.vdom._
        |import org.scalajs.dom
        |import scala.scalajs.js
@@ -76,7 +76,7 @@ object Runner {
       }
 
     val fullOutputPath = outputFolder / RelPath(
-      library.packageName.replaceAll("\\.", File.separator))
+      library.packageName.replaceAll("\\.", if (File.separator == "\\") "\\\\" else File.separator))
     fullOutputPath.toIO.mkdirs()
 
     val prelude: String =
