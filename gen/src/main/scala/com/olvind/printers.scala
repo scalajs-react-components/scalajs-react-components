@@ -32,7 +32,6 @@ object Printer {
 
     (p, comp.enumClases map outEnumClass)
   }
-
   def hack(comp: ParsedComponent): String =
     comp.genericParams
       .map { p ⇒
@@ -119,7 +118,13 @@ implicit def ev2${p.name}(${p.name.toLowerCase}: ${p.name} | js.Array[${p.name}]
       ("super" -> "`super`"),
       ("type"  -> "`type`")
     )
-    safeSubstitutions.get(name).getOrElse(name)
+    val ret = safeSubstitutions.get(name).getOrElse(name)
+    if (ret.contains("-")) {
+      s"`${ret}`"
+    }
+    else {
+      ret
+    }
   }
 
   def outProp(p: ParsedProp, fs: FieldStats): String = {
@@ -142,7 +147,7 @@ implicit def ev2${p.name}(${p.name.toLowerCase}: ${p.name} | js.Array[${p.name}]
     }
   }
 
-  def outEnumClass(c: ParsedEnumClass): SecondaryOutFile =
+  def outEnumClass(c: ParsedEnumClass): SecondaryOutFile = {
     SecondaryOutFile(
       c.name,
       s"""
@@ -157,6 +162,7 @@ implicit def ev2${p.name}(${p.name.toLowerCase}: ${p.name} | js.Array[${p.name}]
          |${indent(1)}val values = ${c.identifiers.map(_._1.value).map(safeName).toList}
          |}""".stripMargin
     )
+  }
 
   def outMethodClass(c: ParsedMethodClass): SecondaryOutFile =
     SecondaryOutFile(

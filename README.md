@@ -2,8 +2,10 @@ scalajs-react-components
 ========================
 
 [![Join the chat at https://gitter.im/chandu0101/scalajs-react-components](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/chandu0101/scalajs-react-components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![scalajs-react](https://img.shields.io/badge/scalajs--react-1.3.1-blue.svg)](https://github.com/japgolly/scalajs-react)
+[![scalajs-react](https://img.shields.io/badge/scalajs--react-1.4.0-blue.svg)](https://github.com/japgolly/scalajs-react)
 [![react](https://img.shields.io/badge/react-16.7.0-blue.svg)](https://reactjs.org)
+[![material-ui](https://img.shields.io/badge/material--ui-0.20.0-blue.svg)](https://material-ui.com/)
+
 
 Reusable [scalajs-react](https://github.com/japgolly/scalajs-react) components.
 
@@ -52,7 +54,7 @@ Add these dependencies to you sbt build file
 libraryDependencies ++= Seq(
   "com.github.japgolly.scalajs-react" %%% "core" % "1.1.0",
   "com.github.japgolly.scalajs-react" %%% "extra" % "1.1.0",
-  "com.olvind" %%% "scalajs-react-components" % "1.0.0-M2"
+  "com.olvind" %%% "scalajs-react-components" % "1.1.0"
 )
 ```
 
@@ -70,7 +72,7 @@ See [here](https://japgolly.github.io/scalacss/book/ext/react.html) for more det
 
 **Online :**
 
-http://chandu0101.github.io/scalajs-react-components
+http://scalajs-react-components.github.io/scalajs-react-components
 
 **Local :** This will start a web server on http://localhost:8080
 ```

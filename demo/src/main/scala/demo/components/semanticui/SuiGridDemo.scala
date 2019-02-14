@@ -17,7 +17,7 @@ object SuiGridDemo {
     val columns = (1 to 16).map(
       i =>
         (SuiGridColumn(key = i.toString)(
-          SuiImage(src = "http://semantic-ui.com/images/wireframe/image.png")()).vdomElement))
+          SuiImage(href = "http://semantic-ui.com/images/wireframe/image.png")()).vdomElement))
     def render() =
       <.div(CodeExample(code, "SuiGrid")(SuiGrid()(columns: _*)))
   }

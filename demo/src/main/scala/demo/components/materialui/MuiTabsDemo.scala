@@ -5,7 +5,7 @@ package materialui
 import chandu0101.macros.tojs.GhPagesMacros
 import chandu0101.scalajs.react.components.materialui._
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.raw._
+import japgolly.scalajs.react.raw.React
 import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
@@ -28,7 +28,7 @@ object MuiTabsDemo {
 
   // EXAMPLE:START
   case class Backend($ : BackendScope[Unit, Int]) {
-    val onChange: (Int, ReactEventFromHtml, ReactElement) => Callback =
+    val onChange: (Int, ReactEventFromHtml, React.Element) => Callback =
       (chosen, _, _) ⇒ $.setState(chosen) >> Callback.info(s"chose $chosen")
 
     def render(current: Int) =

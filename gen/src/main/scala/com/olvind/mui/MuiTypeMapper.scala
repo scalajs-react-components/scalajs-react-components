@@ -16,8 +16,14 @@ object MuiTypeMapper extends TypeMapper {
       // i dont have patience to do this properly (GridList)
       case (_, "cellHeight", _) => Normal("Int")
 
-      case (_, _, e) if e.contains("oneOfType") =>
-        Normal(split(1, e) map (t => apply(compName, fieldName, t)) map (_.name) mkString " | ")
+      case (_, _, e) if e.contains("oneOfType") || e.contains("some(") => {
+        val splitted = split(1, e)
+        Normal(splitted.map(t => apply(compName, fieldName, t))
+          .filter(_.name.nonEmpty)
+          .map(_.name)
+          .toSet
+          .mkString(" | "))
+      }
       case (_, _, enum) if enum.startsWith("Mui.oneOf") =>
         Enum(compName, split(1, enum))
 
@@ -86,7 +92,7 @@ object MuiTypeMapper extends TypeMapper {
       case (_, "valueLink", "Mui.object")                         => Normal("js.Any")
 
       /* mui general */
-      case (_, _, "Mui.string") if is("color")            => Normal("MuiColor")
+      case (_, _, "Mui.string") if is("color")            => Normal("MuiColors | MuiColor | String")
       case (_, _, "Mui.object") if is("style")            => Normal("CssProperties")
       case (_, _, "Mui.object") if is("muiTheme")         => Normal("MuiTheme")
       case (_, _, "Mui.object")                           => Normal("js.Object")
@@ -94,9 +100,9 @@ object MuiTypeMapper extends TypeMapper {
       case (_, "label", "validateLabel")                  => Normal("String")
       case (_, "zDepth", _)                               => Normal("ZDepth")
       case (_, _, "Mui.origin")                           => Normal("Origin")
-      case (_, _, "_propTypes4.default.origin")           => Normal("Origin") //TODO???
-      case (_, _, "_propTypes4.default.cornersAndCenter") => Normal("CornersAndCenter") //TODO???
-      case (_, _, "_propTypes4.default.stringOrNumber")   => Normal("String | Double") //TODO???
+      case (_, _, "_propTypes4.default.origin")           => Normal("Origin")
+      case (_, _, "_propTypes4.default.cornersAndCenter") => Normal("CornersAndCenter")
+      case (_, _, "_propTypes4.default.stringOrNumber")   => Normal("String | Double")
       case (_, _, "Mui.cornersAndCenter")                 => Normal("CornersAndCenter")
       case (_, _, "Mui.corners")                          => Normal("Corners")
       case (_, _, "Mui.stringOrNumber")                   => Normal("String | Double")
@@ -113,6 +119,21 @@ object MuiTypeMapper extends TypeMapper {
 
       case ("Stepper", "children", "Mui.arrayOf(Mui.node)") => Normal("js.Any")
 
+      case ("FormField","control","Mui.oneOf") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormField","control","button") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormField","control","input") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormField","control","select") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormField","control","textarea") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormField","type","_lib.customevery([_lib.customdemand(['control'])])") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormGroup","grouped","_lib.customevery([_lib.customdisallow(['inline']), Mui.bool])") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("FormGroup","inline","_lib.customevery([_lib.customdisallow(['grouped']), Mui.bool])") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","celled","Mui.oneOf") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","celled","internally") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","divided","Mui.oneOf") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","divided","vertically") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","padded","Mui.oneOf") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","padded","horizontally") => Normal("js.Any") //TODO write this Missing in TypeMapper
+      case ("Grid","padded","vertically") => Normal("js.Any") //TODO write this Missing in TypeMapper
       case (_, _, "Mui.func") =>
         Normal(MuiTypeMapperFunction(compName, fieldName))
 

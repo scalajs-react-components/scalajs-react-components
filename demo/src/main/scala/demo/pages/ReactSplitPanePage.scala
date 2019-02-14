@@ -7,6 +7,8 @@ import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
 
 object ReactSplitPanePage {
+  import scala.language.existentials
+
   case class Backend($ : BackendScope[_, _]) {
     def render(P: Props): VdomElement =
       LeftNavPage(ReactSplitPaneRouteModule.menu, P.selectedPage, P.ctrl)
